@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Casbin.Sam.Abstractions\Casbin.Sam.Abstractions.csproj" />
+    <ProjectReference Include="..\Casbin.Sam.Client\Casbin.Sam.Client.csproj" />
+  </ItemGroup>
+
+</Project>
