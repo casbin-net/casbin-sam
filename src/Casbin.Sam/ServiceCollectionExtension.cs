@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Casbin.Sam
+﻿namespace Casbin.Sam
 {
     public static class ServiceCollectionExtension
     {

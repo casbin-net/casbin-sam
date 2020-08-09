@@ -4,13 +4,14 @@ namespace Casbin.Sam.Core
 {
     public class CasbinModel
     {
-        public CasbinModel(Model model)
+        public CasbinModel(Model model, string versionToken)
         {
             Model = model;
+            VersionToken = versionToken;
         }
 
-        public Model Model { get; set; }
+        public Model Model { get; }
 
-        public string? VersionToken { get; set; }
+        public string VersionToken { get; }
     }
 }

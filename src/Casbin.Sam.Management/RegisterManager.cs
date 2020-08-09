@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Buffers.Text;
+using System.Threading.Tasks;
 using Casbin.Sam.Abstractions.Management;
 using Casbin.Sam.Core;
 
@@ -6,7 +7,6 @@ namespace Casbin.Sam.Management
 {
     public class RegisterManager : IRegisterManager<Register>
     {
-
         public ValueTask<Register> GetRegister(string clientId)
         {
             throw new System.NotImplementedException();

@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Casbin.Sam.Core;
 
 namespace Casbin.Sam.Abstractions
 {
