@@ -4,34 +4,34 @@ using Casbin.Sam.Core;
 
 namespace Casbin.Sam.Management
 {
-    public class PolicyManager : IPolicyManager<Policy>
+    public class PolicyManager : IPolicyManager<SamPolicy>
     {
-        public Task<Policy> AddPolicyAsync(Policy policy)
+        public Task<SamPolicy> AddPolicyAsync(SamPolicy policy)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Policy> AddPolicyAsync(string scopeId, Policy policy)
+        public Task<SamPolicy> AddPolicyAsync(string scopeId, SamPolicy policy)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Policy> DeleteFilteredPolicyAsync(Policy policy, FilterParameter parameter)
+        public Task<SamPolicy> DeleteFilteredPolicyAsync(SamPolicy policy, FilterParameter parameter)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Policy> DeleteFilteredPolicyAsync(string scopeId, Policy policy, FilterParameter parameter)
+        public Task<SamPolicy> DeleteFilteredPolicyAsync(string scopeId, SamPolicy policy, FilterParameter parameter)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Policy> DeletePolicyAsync(Policy policy)
+        public Task<SamPolicy> DeletePolicyAsync(SamPolicy policy)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Policy> DeletePolicyAsync(string scopeId, Policy policy)
+        public Task<SamPolicy> DeletePolicyAsync(string scopeId, SamPolicy policy)
         {
             throw new System.NotImplementedException();
         }

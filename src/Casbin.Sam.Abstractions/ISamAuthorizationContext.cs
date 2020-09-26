@@ -1,4 +1,4 @@
-﻿using Casbin.AspNetCore.Abstractions;
+﻿using Casbin.AspNetCore.Authorization;
 
 namespace Casbin.Sam.Abstractions
 {

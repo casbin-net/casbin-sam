@@ -2,16 +2,19 @@
 
 namespace Casbin.Sam.Core
 {
-    public class CasbinModel
+    public class CasbinSamModel
     {
-        public CasbinModel(Model model, string versionToken)
+        public CasbinSamModel(string scopeId, Model model, string versionToken)
         {
             Model = model;
             VersionToken = versionToken;
+            ScopeId = scopeId;
         }
+
+        public string ScopeId { get; }
 
         public Model Model { get; }
 
-        public string VersionToken { get; }
+        public string VersionToken { get; set; }
     }
 }

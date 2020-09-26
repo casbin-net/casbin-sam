@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Casbin.Sam.Annotations\Casbin.Sam.Annotations.csproj" />
+    <ProjectReference Include="..\Casbin.Sam.Management\Casbin.Sam.Management.csproj" />
     <ProjectReference Include="..\Casbin.Sam\Casbin.Sam.csproj" />
   </ItemGroup>
 

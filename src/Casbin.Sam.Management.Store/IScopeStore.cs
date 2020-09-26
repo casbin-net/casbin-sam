@@ -1,15 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Casbin.Sam.Management.Store
 {
     public interface IScopeStore<T>
     {
-        public ValueTask<T> GetScopeAsync(string scopeId);
+        public Task<bool> HasScopeAsync(string scopeId, CancellationToken cancellationToken = default);
 
-        public Task<T> AddScopeAsync(T scope);
+        public ValueTask<T> GetScopeAsync(string scopeId, bool track = false, CancellationToken cancellationToken = default);
 
-        public ValueTask<T> UpdateScopeAsync(string scopeId, T scope);
+        public Task<T> AddScopeAsync(T scope, CancellationToken cancellation = default);
 
-        public Task RemoveScopeAsync(string scopeId);
+        public ValueTask<T> UpdateScopeAsync(string scopeId, T scope, CancellationToken cancellationToken = default);
+
+        public Task RemoveScopeAsync(string scopeId, CancellationToken cancellationToken = default);
     }
 }
