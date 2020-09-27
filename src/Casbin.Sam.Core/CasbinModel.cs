@@ -6,9 +6,9 @@ namespace Casbin.Sam.Core
     {
         public CasbinSamModel(string scopeId, Model model, string versionToken)
         {
+            ScopeId = scopeId;
             Model = model;
             VersionToken = versionToken;
-            ScopeId = scopeId;
         }
 
         public string ScopeId { get; }

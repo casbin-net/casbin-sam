@@ -28,7 +28,7 @@ namespace Casbin.Sam.Management.Tests.Fixtures
             scope.ServiceProvider.GetRequiredService<SamDbContext>().Database.EnsureCreated();
 
             var modelCache = ServiceProvider.GetRequiredService<ICasbinSamModelCache<CasbinSamModel>>();
-            var scopeId = SamConstants.DefaultAuthorizationScopeId;
+            string scopeId = SamConstants.DefaultAuthorizationScopeId;
             modelCache.AddOrUpdateModel(scopeId,
                 new CasbinSamModel(scopeId, CoreEnforcer.NewModel("Examples/store_test_model.conf", null), string.Empty));
         }

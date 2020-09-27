@@ -86,8 +86,7 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
 
         private async Task UpdateVersionTokenAsync(string scopeId, CasbinSamModel samModel)
         {
-            samModel = new CasbinSamModel(scopeId, samModel.Model,
-                await _versionTokenProvider.GenerateVersionTokenAsync(samModel));
+            samModel.VersionToken = await _versionTokenProvider.GenerateVersionTokenAsync(samModel);
             _casbinModelCache.AddOrUpdateModel(scopeId, samModel);
         }
     }

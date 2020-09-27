@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Casbin.Sam.Abstractions.Management;
 using Casbin.Sam.Core;
 using Casbin.Sam.Management.Store;
 using Casbin.Sam.Management.Tests.Fixtures;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using NetCasbin.Model;
 using Xunit;
 
-namespace Casbin.Sam.Management.Tests
+namespace Casbin.Sam.Management.Tests.EntityFrameworkStoreTests
 {
-    public class EntityFrameworkStoreTest : IClassFixture<ServicesFixture>
+    public class PolicyStoreTest : IClassFixture<ServicesFixture>
     {
         private readonly IServiceProvider _servicesProvider;
 
-        public EntityFrameworkStoreTest(ServicesFixture servicesFixture)
+        public PolicyStoreTest(ServicesFixture servicesFixture)
         {
             _servicesProvider = servicesFixture.ServiceProvider;
         }
@@ -40,7 +38,7 @@ namespace Casbin.Sam.Management.Tests
 
             Assert.Equal(1, policies.Length);
             Assert.Equal(rule, policies.First().Rule);
-            Assert.False(object.ReferenceEquals(rule, policies.First().Rule));
+            Assert.False(ReferenceEquals(rule, policies.First().Rule));
         }
 
 

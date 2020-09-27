@@ -22,7 +22,16 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
 
             modelBuilder.Entity<CasbinSamRule>().HasKey(rule => rule.Id);
 
-            modelBuilder.Entity<AuthorizationScope>().HasKey(scope => scope.ScopeId);
+            modelBuilder.Entity<AuthorizationScope>(scope =>
+            {
+                scope.HasData(new AuthorizationScope
+                {
+                    ScopeId = SamConstants.DefaultAuthorizationScopeId,
+                    ScopeName = SamConstants.DefaultAuthorizationScopeId
+                });
+                scope.HasKey(s => s.ScopeId);
+            });
+
             modelBuilder.Entity<ProtectedClient>().HasKey(client => client.ClientId);
             modelBuilder.Entity<ProtectedResource>().HasKey(resource => resource.ResourceId);
             base.OnModelCreating(modelBuilder);
