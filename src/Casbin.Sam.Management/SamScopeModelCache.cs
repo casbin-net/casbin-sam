@@ -4,23 +4,28 @@ using Casbin.Sam.Core;
 
 namespace Casbin.Sam.Management
 {
-    public class CasbinSamModelCache : ICasbinSamModelCache<CasbinSamModel>
+    public class SamScopeModelCache : ISamScopeModelCache<SamScopeModel>
     {
-        private readonly ConcurrentDictionary<string, CasbinSamModel> _casbinModels
-            = new ConcurrentDictionary<string, CasbinSamModel>();
+        private readonly ConcurrentDictionary<string, SamScopeModel> _casbinModels
+            = new ConcurrentDictionary<string, SamScopeModel>();
 
-        public bool TryGetModel(string scopeId, out CasbinSamModel model)
+        public bool HasModel(string scopeId)
+        {
+            return _casbinModels.ContainsKey(scopeId);
+        }
+
+        public bool TryGetModel(string scopeId, out SamScopeModel model)
         {
             return _casbinModels.TryGetValue(scopeId, out model);
         }
 
-        public CasbinSamModel AddOrUpdateModel(string scopeId, CasbinSamModel model)
+        public SamScopeModel AddOrUpdateModel(string scopeId, SamScopeModel model)
         {
             return _casbinModels.AddOrUpdate(scopeId, s => model,
                 (s, old) => model);
         }
 
-        public CasbinSamModel GetOrAddModel(string scopeId, CasbinSamModel model)
+        public SamScopeModel GetOrAddModel(string scopeId, SamScopeModel model)
         {
             return _casbinModels.GetOrAdd(scopeId, s => model);
         }

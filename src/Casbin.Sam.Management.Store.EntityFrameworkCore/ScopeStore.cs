@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Casbin.Sam.Core;
@@ -28,6 +29,21 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
                 string.Equals(s.ScopeId, scopeId), cancellationToken);
         }
 
+        public async Task<IEnumerable<AuthorizationScope>> GetScopesAsync(bool track = false, CancellationToken cancellationToken = default)
+        {
+            var scopes = _scopes.AsQueryable();
+
+            if (track is false)
+            {
+                scopes = scopes.AsNoTracking();
+            }
+
+            return await scopes
+                .Include( s => s.Clients)
+                .Include(s => s.Resources )
+                .ToListAsync(cancellationToken);
+        }
+
         public async ValueTask<AuthorizationScope> GetScopeAsync(string scopeId, bool track = false, CancellationToken cancellationToken = default)
         {
             var scopes = _scopes.AsQueryable();
@@ -37,7 +53,10 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
                 scopes = scopes.AsNoTracking();
             }
 
-            return await scopes.FirstOrDefaultAsync(s => string.Equals(s.ScopeId, scopeId), cancellationToken: cancellationToken);
+            return await scopes
+                .Include( s => s.Clients)
+                .Include(s => s.Resources)
+                .FirstOrDefaultAsync(s => string.Equals(s.ScopeId, scopeId), cancellationToken);
         }
 
         public async Task<AuthorizationScope> AddScopeAsync(AuthorizationScope scope, CancellationToken cancellationToken = default)
@@ -55,9 +74,8 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
             return scope;
         }
 
-        public async Task RemoveScopeAsync(string scopeId, CancellationToken cancellationToken = default)
+        public async Task RemoveScopeAsync(AuthorizationScope scope, CancellationToken cancellationToken = default)
         {
-            var scope = await GetScopeAsync(scopeId, cancellationToken: cancellationToken);
             _scopes.Remove(scope);
             await TrySaveChanges(cancellationToken);
         }
@@ -71,5 +89,6 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
 
             return await Task.FromResult(false);
         }
+
     }
 }

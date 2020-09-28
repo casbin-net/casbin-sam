@@ -1,14 +1,16 @@
-﻿using NetCasbin.Model;
+﻿using System.Collections.Generic;
+using NetCasbin.Model;
 
 namespace Casbin.Sam.Core
 {
-    public class CasbinSamModel
+    public class SamScopeModel
     {
-        public CasbinSamModel(string scopeId, Model model, string versionToken)
+        public SamScopeModel(string scopeId, Model model, string versionToken, AuthorizationScope authorizationScope)
         {
             ScopeId = scopeId;
             Model = model;
             VersionToken = versionToken;
+            AuthorizationScope = authorizationScope;
         }
 
         public string ScopeId { get; }
@@ -16,5 +18,9 @@ namespace Casbin.Sam.Core
         public Model Model { get; }
 
         public string VersionToken { get; set; }
+
+        public AuthorizationScope AuthorizationScope { get; set; }
+
+        public IDictionary<string, SamRegister>? SamRegisters { get; set; }
     }
 }

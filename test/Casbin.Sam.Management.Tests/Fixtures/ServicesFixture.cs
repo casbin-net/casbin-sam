@@ -5,7 +5,6 @@ using Casbin.Sam.Management.Store.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NetCasbin;
-using NetCasbin.Model;
 
 namespace Casbin.Sam.Management.Tests.Fixtures
 {
@@ -27,10 +26,11 @@ namespace Casbin.Sam.Management.Tests.Fixtures
             using var scope = ServiceProvider.CreateScope();
             scope.ServiceProvider.GetRequiredService<SamDbContext>().Database.EnsureCreated();
 
-            var modelCache = ServiceProvider.GetRequiredService<ICasbinSamModelCache<CasbinSamModel>>();
+            var modelCache = ServiceProvider.GetRequiredService<ISamScopeModelCache<SamScopeModel>>();
             string scopeId = SamConstants.DefaultAuthorizationScopeId;
             modelCache.AddOrUpdateModel(scopeId,
-                new CasbinSamModel(scopeId, CoreEnforcer.NewModel("Examples/store_test_model.conf", null), string.Empty));
+                new SamScopeModel(scopeId, CoreEnforcer.NewModel("Examples/store_test_model.conf", null), string.Empty,
+                    null!));
         }
 
         public IServiceProvider ServiceProvider { get; }

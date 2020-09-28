@@ -21,7 +21,7 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
         {
             var services = builder.Services;
             services.TryAddScoped<IPolicyStore<SamPolicy>, PolicyStore>();
-            services.TryAddScoped<IRegisterStore<Register>, RegisterStore>();
+            services.TryAddScoped<IRegisterStore<SamRegister>, RegisterStore>();
             services.TryAddScoped<IScopeStore<AuthorizationScope>, ScopeStore>();
             services.TryAddSingleton<SamAdapterProvider>();
             return builder;

@@ -9,11 +9,11 @@ using Microsoft.Extensions.Options;
 
 namespace Casbin.Sam.Management.Store.EntityFrameworkCore
 {
-    public class RegisterStore : IRegisterStore<Register>
+    public class RegisterStore : IRegisterStore<SamRegister>
     {
         private readonly SamDbContext _samDbContext;
         private readonly StoreOptions _storeOptions;
-        private readonly DbSet<Register> _registers;
+        private readonly DbSet<SamRegister> _registers;
 
         private bool AutoSave => _storeOptions.AutoSave;
 
@@ -24,7 +24,7 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
             _registers = _samDbContext.Registers ?? throw new ArgumentNullException(nameof(samDbContext));
         }
 
-        public async Task<IEnumerable<Register>> GetRegisterByScopeIdAsync(string scopeId, bool track = false,
+        public async Task<IEnumerable<SamRegister>> GetRegistersAsync(string scopeId, bool track = false,
             CancellationToken cancellationToken = default)
         {
             var registers = _registers.Where(r => string.Equals(r.ScopeId, scopeId));
@@ -37,7 +37,7 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
             return await registers.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<Register> GetRegisterByClientIdAsync(string clientId, bool track = false,
+        public async ValueTask<SamRegister> GetRegisterAsync(string clientId, bool track = false,
             CancellationToken cancellationToken = default)
         {
             var registers = _registers.AsQueryable();
@@ -51,14 +51,14 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
                 string.Equals(r.ClientId, clientId), cancellationToken);
         }
 
-        public async Task<Register> AddRegisterAsync(Register register, CancellationToken cancellationToken = default)
+        public async Task<SamRegister> AddRegisterAsync(SamRegister register, CancellationToken cancellationToken = default)
         {
             await _registers.AddAsync(register, cancellationToken);
             await TrySaveChanges(cancellationToken);
             return register;
         }
 
-        public async ValueTask<Register> UpdateRegisterAsync(string clientId, Register register, CancellationToken cancellationToken = default)
+        public async ValueTask<SamRegister> UpdateRegisterAsync(string clientId, SamRegister register, CancellationToken cancellationToken = default)
         {
             register.ClientId = clientId;
             _registers.Update(register);
@@ -66,16 +66,15 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
             return register;
         }
 
-        public async Task RemoveRegisterByScopeIdAsync(string scopeId, CancellationToken cancellationToken = default)
+        public async Task RemoveRegistersAsync(string scopeId, CancellationToken cancellationToken = default)
         {
-            var registers = await GetRegisterByScopeIdAsync(scopeId, cancellationToken: cancellationToken);
+            var registers = await GetRegistersAsync(scopeId, cancellationToken: cancellationToken);
             _registers.RemoveRange(registers);
             await TrySaveChanges(cancellationToken);
         }
 
-        public async Task RemoveRegisterByClientIdAsync(string clientId, CancellationToken cancellationToken = default)
+        public async Task RemoveRegisterAsync(SamRegister register, CancellationToken cancellationToken = default)
         {
-            var register = await GetRegisterByClientIdAsync(clientId, cancellationToken: cancellationToken);
             _registers.Remove(register);
             await TrySaveChanges(cancellationToken);
         }

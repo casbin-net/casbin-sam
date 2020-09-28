@@ -12,13 +12,13 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
 
         }
 
-        public DbSet<Register> Registers { get; set; }
+        public DbSet<SamRegister> Registers { get; set; }
         public DbSet<CasbinSamRule> CasbinSamRule { get; set; }
         public DbSet<AuthorizationScope> AuthorizationScopes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Register>().HasKey(register => new { register.ScopeId, register.ClientId });
+            modelBuilder.Entity<SamRegister>().HasKey(register => new { register.ScopeId, register.ClientId });
 
             modelBuilder.Entity<CasbinSamRule>().HasKey(rule => rule.Id);
 

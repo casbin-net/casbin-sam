@@ -6,19 +6,25 @@ namespace Casbin.Sam.Abstractions.Management
 {
     public interface IScopeManager<T>
     {
-        public ValueTask<T> GetScopeAsync(string scopeId);
+        public Task<bool> HasScopeAsync(string scopeId);
+
+        public Task<T> CreateScopeAsync(string scopeId, string scopeName, ICollection<ProtectedClient> clients = default, ICollection<ProtectedResource> resources = default);
+
+        public Task<IEnumerable<T>> GetScopesAsync(bool track = false);
+
+        public ValueTask<T> GetScopeAsync(string scopeId, bool track = false);
 
         public ValueTask<T> RemoveScopeAsync(string scopeId);
 
         public ValueTask<T> RemoveScopeAsync(T scope);
 
-        public ValueTask<T> AddClientAsync(T scope, ProtectedClient client);
+        public Task<T> AddClientAsync(T scope, ProtectedClient client);
 
-        public ValueTask<T> AddResourceAsync(T scope, ProtectedResource resource);
+        public Task<T> AddResourceAsync(T scope, ProtectedResource resource);
 
-        public ValueTask<T> AddClientsAsync(T scope, IEnumerable<ProtectedClient> client);
+        public Task<T> AddClientsAsync(T scope, IEnumerable<ProtectedClient> client);
 
-        public ValueTask<T> AddResourcesAsync(T scope, IEnumerable<ProtectedResource> resources);
+        public Task<T> AddResourcesAsync(T scope, IEnumerable<ProtectedResource> resources);
 
         public ValueTask<T> RemoveClientAsync(T scope, ProtectedClient client);
 

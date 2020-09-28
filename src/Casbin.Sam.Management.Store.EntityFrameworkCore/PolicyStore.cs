@@ -12,82 +12,79 @@ namespace Casbin.Sam.Management.Store.EntityFrameworkCore
 {
     public class PolicyStore : IPolicyStore<SamPolicy>
     {
-        private readonly ICasbinSamModelCache<CasbinSamModel> _casbinModelCache;
+        private readonly ISamScopeModelCache<SamScopeModel> _scopeModelCache;
         private readonly SamAdapterProvider _samAdapterProvider;
-        private readonly IVersionTokenProvider<CasbinSamModel, string> _versionTokenProvider;
+        private readonly IVersionTokenProvider<SamScopeModel, string> _versionTokenProvider;
         private readonly Enforcer _enforcer = new Enforcer();
 
-        public PolicyStore(ICasbinSamModelCache<CasbinSamModel> casbinModelCache,
+        public PolicyStore(ISamScopeModelCache<SamScopeModel> scopeModelCache,
             SamAdapterProvider samAdapterProvider,
-            IVersionTokenProvider<CasbinSamModel, string> versionTokenProvider)
+            IVersionTokenProvider<SamScopeModel, string> versionTokenProvider)
         {
-            _casbinModelCache = casbinModelCache ?? throw new ArgumentNullException(nameof(casbinModelCache));
+            _scopeModelCache = scopeModelCache ?? throw new ArgumentNullException(nameof(scopeModelCache));
             _samAdapterProvider = samAdapterProvider ?? throw new ArgumentNullException(nameof(samAdapterProvider));
             _versionTokenProvider = versionTokenProvider ?? throw new ArgumentNullException(nameof(versionTokenProvider));
         }
 
         public async Task<SamPolicy> AddPolicyAsync(string scopeId, SamPolicy policy)
         {
-            var samModel = await GetSamModelAsync(scopeId);
+            var samModel = GetSamModel(scopeId);
             var enforcer = GetEnforcer(scopeId, samModel);
             await enforcer.AddNamedPolicyAsync(policy.Type, policy.Rule.ToArray());
             await UpdateVersionTokenAsync(scopeId, samModel);
             return policy;
         }
 
-        public async ValueTask<IEnumerable<SamPolicy>> GetFilteredPoliciesAsync(string scopeId, string policyType, FilterParameter parameter)
+        public ValueTask<IEnumerable<SamPolicy>> GetFilteredPoliciesAsync(string scopeId, string policyType, FilterParameter parameter)
         {
-            var samModel = await GetSamModelAsync(scopeId);
+            var samModel = GetSamModel(scopeId);
             var policies = samModel.Model.GetFilteredPolicy(PermConstants.Section.PolicySection,
                 policyType, parameter.StartIndex, parameter.Values as string[] ?? parameter.Values.ToArray());
-            return policies.Select(p => new SamPolicy(policyType, p));
+            return new ValueTask<IEnumerable<SamPolicy>>(policies.Select(p => new SamPolicy(policyType, p)));
         }
 
-        public async ValueTask<IEnumerable<SamPolicy>> GetPoliciesAsync(string scopeId, string policyType)
+        public ValueTask<IEnumerable<SamPolicy>> GetPoliciesAsync(string scopeId, string policyType)
         {
-            var samModel = await GetSamModelAsync(scopeId);
+            var samModel = GetSamModel(scopeId);
             var policies = samModel.Model.GetPolicy(PermConstants.Section.PolicySection, policyType);
-            return policies.Select(p => new SamPolicy(policyType, p));
+            return new ValueTask<IEnumerable<SamPolicy>>(policies.Select(p => new SamPolicy(policyType, p)));
         }
 
         public async Task RemovePolicyAsync(string scopeId, SamPolicy policy)
         {
-            var samModel = await GetSamModelAsync(scopeId);
+            var samModel = GetSamModel(scopeId);
             var enforcer = GetEnforcer(scopeId, samModel);
             await enforcer.RemoveNamedPolicyAsync(policy.Type, policy.Rule as string[] ?? policy.Rule.ToArray());
         }
 
         public async Task RemoveFilteredPoliciesAsync(string scopeId, string policyType, FilterParameter parameter)
         {
-            var samModel = await GetSamModelAsync(scopeId);
+            var samModel = GetSamModel(scopeId);
             var enforcer = GetEnforcer(scopeId, samModel);
             await enforcer.RemoveFilteredNamedPolicyAsync(policyType, parameter.StartIndex, parameter.Values as string[] ?? parameter.Values.ToArray());
         }
 
-        private async ValueTask<CasbinSamModel> GetSamModelAsync(string scopeId)
+        private SamScopeModel GetSamModel(string scopeId)
         {
-            if (_casbinModelCache.TryGetModel(scopeId, out var samModel))
+            if (_scopeModelCache.TryGetModel(scopeId, out var samModel) is false)
             {
-                return samModel;
+                throw new ApplicationException($"Can not find the special scope {scopeId}");
             }
 
-            samModel = new CasbinSamModel(scopeId, CoreEnforcer.NewModel(),
-                await _versionTokenProvider.GenerateVersionTokenAsync());
-
-            return _casbinModelCache.AddOrUpdateModel(scopeId, samModel);
+            return samModel;
         }
 
-        private Enforcer GetEnforcer(string scopeId, CasbinSamModel samModel)
+        private Enforcer GetEnforcer(string scopeId, SamScopeModel samModel)
         {
             _enforcer.SetModel(samModel.Model);
             _enforcer.SetAdapter(_samAdapterProvider.GetAdapter(scopeId));
             return _enforcer;
         }
 
-        private async Task UpdateVersionTokenAsync(string scopeId, CasbinSamModel samModel)
+        private async Task UpdateVersionTokenAsync(string scopeId, SamScopeModel samModel)
         {
             samModel.VersionToken = await _versionTokenProvider.GenerateVersionTokenAsync(samModel);
-            _casbinModelCache.AddOrUpdateModel(scopeId, samModel);
+            _scopeModelCache.AddOrUpdateModel(scopeId, samModel);
         }
     }
 }

@@ -5,7 +5,7 @@ using Casbin.Sam.Core.Services;
 
 namespace Casbin.Sam.Management
 {
-    public class VersionTokenProvider : IVersionTokenProvider<CasbinSamModel, string>
+    public class VersionTokenProvider : IVersionTokenProvider<SamScopeModel, string>
     {
         public Task<string> GenerateVersionTokenAsync()
         {
@@ -13,7 +13,7 @@ namespace Casbin.Sam.Management
             return Task.FromResult(token);
         }
 
-        public Task<string> GenerateVersionTokenAsync(CasbinSamModel source)
+        public Task<string> GenerateVersionTokenAsync(SamScopeModel source)
         {
             return GenerateVersionTokenAsync();
         }
